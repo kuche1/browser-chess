@@ -1,14 +1,18 @@
-// TODO: unused
-
 package client
 
-import "github.com/hajimehoshi/ebiten/v2"
+import (
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/quic-go/quic-go"
+)
 
 type SceneBoard struct {
+	conn *quic.Conn
 }
 
-func NewSceneBoard() *SceneBoard {
-	return &SceneBoard{}
+func NewSceneBoard(conn *quic.Conn) *SceneBoard {
+	return &SceneBoard{
+		conn: conn,
+	}
 }
 
 func (self *SceneBoard) Update() error {

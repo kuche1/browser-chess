@@ -30,6 +30,7 @@ func (self *SceneConnectToServer) Update() error {
 			return result.err
 		} else {
 			fmt.Printf("got conn: %v\n", result.conn)
+			return NewChangeScene(NewSceneBoard(result.conn))
 		}
 	default:
 	}
@@ -61,11 +62,9 @@ func connectToServer(result chan ConnAnderror) {
 		},
 		nil,
 	)
-	if err != nil {
-		fmt.Errorf("%v", err)
-	}
-
-	fmt.Printf("conn=%v\n", conn)
+	// if err != nil {
+	// 	fmt.Errorf("%v", err)
+	// }
 
 	result <- ConnAnderror{
 		conn: conn,
