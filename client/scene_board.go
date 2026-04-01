@@ -1,3 +1,5 @@
+// TODO: unused
+
 package client
 
 import "github.com/hajimehoshi/ebiten/v2"
