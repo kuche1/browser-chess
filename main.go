@@ -1,7 +1,19 @@
 package main
 
-import "fmt"
+import (
+	"flag"
+
+	"github.com/kuche1/browser-chess/client"
+	"github.com/kuche1/browser-chess/server"
+)
 
 func main() {
-	fmt.Printf("hi\n")
+	runServer := flag.Bool("run-server", false, "Run server")
+	flag.Parse()
+
+	if *runServer {
+		server.Main()
+	} else {
+		client.Main()
+	}
 }
