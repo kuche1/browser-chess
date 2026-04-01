@@ -10,14 +10,48 @@ import (
 )
 
 type SceneConnectToServer struct {
+	result chan ConnAnderror
 }
 
 func NewSceneConnectToServer() *SceneConnectToServer {
-	return &SceneConnectToServer{}
+	result := make(chan ConnAnderror)
+
+	go connectToServer(result)
+
+	return &SceneConnectToServer{
+		result: result,
+	}
 }
 
 func (self *SceneConnectToServer) Update() error {
-	// TODO: this fucking block the "X" button on the window
+	select {
+	case result := <-self.result:
+		if result.err != nil {
+			return result.err
+		} else {
+			fmt.Printf("got conn: %v\n", result.conn)
+		}
+	default:
+	}
+
+	return nil
+}
+
+func (self *SceneConnectToServer) Draw(screen *ebiten.Image) {
+}
+
+func (self *SceneConnectToServer) Layout(outsideWidth int, outsideHeight int) (int, int) {
+	return outsideWidth, outsideHeight
+}
+
+type ConnAnderror struct {
+	conn *quic.Conn
+	err  error
+}
+
+func connectToServer(result chan ConnAnderror) {
+	defer close(result)
+
 	conn, err := quic.DialAddr(
 		context.Background(),
 		ServerAddr,
@@ -33,12 +67,8 @@ func (self *SceneConnectToServer) Update() error {
 
 	fmt.Printf("conn=%v\n", conn)
 
-	return nil
-}
-
-func (self *SceneConnectToServer) Draw(screen *ebiten.Image) {
-}
-
-func (self *SceneConnectToServer) Layout(outsideWidth int, outsideHeight int) (int, int) {
-	return outsideWidth, outsideHeight
+	result <- ConnAnderror{
+		conn: conn,
+		err:  err,
+	}
 }
