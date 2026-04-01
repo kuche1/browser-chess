@@ -3,9 +3,9 @@ package client
 import (
 	"context"
 	"crypto/tls"
-	"fmt"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/kuche1/browser-chess/lib"
 	"github.com/quic-go/quic-go"
 )
 
@@ -29,7 +29,6 @@ func (self *SceneConnectToServer) Update() error {
 		if result.err != nil {
 			return result.err
 		} else {
-			fmt.Printf("got conn: %v\n", result.conn)
 			return NewChangeScene(NewSceneBoard(result.conn))
 		}
 	default:
@@ -58,7 +57,7 @@ func connectToServer(result chan ConnAnderror) {
 		ServerAddr,
 		&tls.Config{
 			InsecureSkipVerify: true,
-			NextProtos:         []string{QuicProto},
+			NextProtos:         []string{lib.QuicProto},
 		},
 		nil,
 	)
